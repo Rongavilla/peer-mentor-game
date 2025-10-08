@@ -1,0 +1,1 @@
+{\n  "compilerOptions": {\n    "target": "ES2020",\n    "lib": ["dom", "esnext"],\n    "strict": true,\n    "jsx": "preserve",\n    "baseUrl": ".",\n    "paths": {\n      "@/*": ["./src/*"]\n    }\n  },\n  "exclude": ["node_modules"]\n}
