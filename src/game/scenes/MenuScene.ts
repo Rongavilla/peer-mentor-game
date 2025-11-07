@@ -24,7 +24,7 @@ export class MenuScene extends Phaser.Scene {
     title.setOrigin(0.5)
 
     // Subtitle
-    const subtitle = this.add.text(width / 2, height / 4 + 80, 'Peer Mentor Game', {
+    const subtitle = this.add.text(width / 2, height / 4 + 80, 'Multiplayer Peer Mentor Game', {
       fontSize: '32px',
       color: '#10B981',
     })
@@ -47,14 +47,14 @@ export class MenuScene extends Phaser.Scene {
       startButton.setFillStyle(0x4f46e5)
     })
     startButton.on('pointerdown', () => {
-      this.scene.start('WorldScene')
+      this.scene.start('MultiplayerWorldScene')
     })
 
     // Instructions
     const instructions = this.add.text(
       width / 2,
       height - 100,
-      'Click Start to begin your mentorship journey!',
+      'Click Start to begin your multiplayer mentorship journey!',
       {
         fontSize: '20px',
         color: '#F59E0B',

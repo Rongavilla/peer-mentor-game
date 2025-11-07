@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { MenuScene } from './scenes/MenuScene'
 import { WorldScene } from './scenes/WorldScene'
+import { MultiplayerWorldScene } from './scenes/MultiplayerWorldScene'
 import { BattleScene } from './scenes/BattleScene'
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -12,11 +13,11 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 0 },
+      gravity: { x: 0, y: 0 },
       debug: false,
     },
   },
-  scene: [MenuScene, WorldScene, BattleScene],
+  scene: [MenuScene, WorldScene, MultiplayerWorldScene, BattleScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
