@@ -47,15 +47,16 @@ export default function AIChat() {
     if (!inputMessage.trim() || !currentRoom) return
 
     const userMessage = inputMessage.trim()
+    const timestamp = Date.now()
     setInputMessage('')
     setIsLoading(true)
 
     // Add user message
     const userMsg: Message = {
-      id: `${Date.now()}-user`,
+      id: `${timestamp}-user`,
       sender: 'You',
       text: userMessage,
-      timestamp: Date.now(),
+      timestamp: timestamp,
     }
     setMessages((prev) => [...prev, userMsg])
 
@@ -74,7 +75,7 @@ export default function AIChat() {
 
       // Add AI response
       const aiMsg: Message = {
-        id: `${Date.now()}-ai`,
+        id: `${data.timestamp}-ai`,
         sender: 'AI Mentor',
         text: data.response,
         timestamp: data.timestamp,

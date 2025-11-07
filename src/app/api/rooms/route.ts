@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { v4 as uuidv4 } from 'uuid'
 
+interface Room {
+  id: string
+  name: string
+  createdAt: number
+  createdBy: string
+}
+
 // In-memory storage for room validation
 // In production, this should be in a database
-const rooms = new Map()
+const rooms = new Map<string, Room>()
 
 export async function POST(request: NextRequest) {
   try {

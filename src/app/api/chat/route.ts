@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { aiService } from '@/../../server/aiService'
+import { aiService } from '@/lib/server/aiService'
 
 export async function POST(request: NextRequest) {
   try {

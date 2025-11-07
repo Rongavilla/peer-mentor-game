@@ -145,16 +145,17 @@ export class MultiplayerWorldScene extends Phaser.Scene {
     if (otherPlayer) {
       // Smooth movement using tween
       this.tweens.add({
-        targets: [otherPlayer.sprite, otherPlayer.label],
+        targets: otherPlayer.sprite,
         x: data.x,
         y: data.y,
         duration: 50,
         ease: 'Linear',
       })
 
-      // Adjust label position
+      // Update label position to follow sprite
       this.tweens.add({
         targets: otherPlayer.label,
+        x: data.x,
         y: data.y - 30,
         duration: 50,
         ease: 'Linear',

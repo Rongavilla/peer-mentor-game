@@ -22,8 +22,9 @@ export class GameServer {
   private io: SocketIOServer
   private httpServer: HTTPServer
   private rooms: Map<string, Room>
+  private cleanupInterval: NodeJS.Timeout
 
-  constructor(port: number = 3001) {
+  constructor(port: number = parseInt(process.env.WEBSOCKET_PORT || '3001')) {
     this.httpServer = createServer()
     this.io = new SocketIOServer(this.httpServer, {
       cors: {
@@ -36,6 +37,24 @@ export class GameServer {
     this.setupEventHandlers()
     this.httpServer.listen(port, () => {
       console.log(`🎮 Game server running on port ${port}`)
+    })
+
+    // Clean up inactive rooms every hour
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupInactiveRooms()
+    }, 3600000) // 1 hour
+  }
+
+  private cleanupInactiveRooms() {
+    const timeout = parseInt(process.env.DEFAULT_ROOM_TIMEOUT || '3600000')
+    const now = Date.now()
+
+    this.rooms.forEach((room, roomId) => {
+      // Remove rooms that are empty or older than timeout
+      if (room.players.size === 0 || (now - room.createdAt) > timeout) {
+        this.rooms.delete(roomId)
+        console.log(`Cleaned up inactive room: ${roomId}`)
+      }
     })
   }
 
@@ -144,6 +163,32 @@ export class GameServer {
         })
       })
 
+      // Handle leave room
+      socket.on('leave-room', (data: { roomId: string }) => {
+        const room = this.rooms.get(data.roomId)
+        if (!room) return
+
+        const player = room.players.get(socket.id)
+        if (player) {
+          room.players.delete(socket.id)
+          socket.leave(data.roomId)
+
+          // Notify other players
+          socket.to(data.roomId).emit('player-left', {
+            playerId: socket.id,
+            playerName: player.name,
+          })
+
+          // Delete room if empty
+          if (room.players.size === 0) {
+            this.rooms.delete(data.roomId)
+            console.log(`Room deleted: ${data.roomId}`)
+          }
+
+          console.log(`Player ${player.name} left room: ${data.roomId}`)
+        }
+      })
+
       // Handle disconnect
       socket.on('disconnect', () => {
         console.log(`Player disconnected: ${socket.id}`)
@@ -204,6 +249,7 @@ export class GameServer {
   }
 
   public close() {
+    clearInterval(this.cleanupInterval)
     this.httpServer.close()
   }
 }

@@ -123,7 +123,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const leaveRoom = useCallback(() => {
     if (socket && currentRoom) {
-      socket.disconnect()
+      socket.emit('leave-room', { roomId: currentRoom.id })
       setCurrentRoom(null)
       setPlayers([])
     }
