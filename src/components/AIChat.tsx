@@ -86,7 +86,7 @@ export default function AIChat() {
       // Broadcast to other players
       if (socket && currentRoom) {
         socket.emit('ai-chat', {
-          message: `AI Mentor: ${data.response}`,
+          message: data.response,
           roomId: currentRoom.id,
         })
       }

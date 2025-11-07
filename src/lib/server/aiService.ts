@@ -23,8 +23,10 @@ You help students learn programming and technology concepts in an encouraging, s
 Keep responses concise (2-3 sentences) and encouraging. Focus on learning and skill development.
 ${context ? `Context: ${context}` : ''}`
 
+      const model = process.env.OPENAI_MODEL || 'gpt-3.5-turbo'
+
       const completion = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage },
