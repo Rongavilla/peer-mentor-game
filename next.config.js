@@ -5,6 +5,7 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       canvas: false,
+      'phaser3spectorjs': false,
     };
     return config;
   },
