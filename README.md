@@ -33,6 +33,19 @@ Transform IT mentorship into an engaging RPG-style experience where:
 
 ## 🚀 Getting Started
 
+### 📘 New to the Project? Start Here!
+
+**For a complete step-by-step walkthrough, see [SETUP_GUIDE.md](SETUP_GUIDE.md)**
+
+The setup guide includes:
+- Detailed prerequisites check
+- Step-by-step installation instructions
+- How to test multiplayer with 2+ players
+- Common issues and solutions
+- Testing on different devices
+
+### Quick Start (Experienced Users)
+
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
