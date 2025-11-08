@@ -95,10 +95,41 @@ DEFAULT_ROOM_TIMEOUT=3600000  # 1 hour
 
 ## 🐛 Troubleshooting
 
-### "Cannot connect to server"
+### "Cannot connect to server" or "localhost not working"
 ```bash
-# Make sure WebSocket server is running
+# 1. Ensure .env.local exists with correct settings
+cp .env.example .env.local
+
+# 2. Verify both servers are running:
+# Terminal 1: Next.js (localhost:3000)
+npm run dev
+
+# Terminal 2: WebSocket server (localhost:3001)
 npm run dev:server
+
+# OR run both together:
+npm run dev:all
+
+# 3. Check if ports are available
+# On Mac/Linux:
+lsof -i :3000
+lsof -i :3001
+
+# On Windows:
+netstat -ano | findstr :3000
+netstat -ano | findstr :3001
+
+# 4. If ports are in use, kill the processes or change ports in .env.local
+```
+
+### "Connection refused" or "ERR_CONNECTION_REFUSED"
+```bash
+# Make sure the WebSocket server is running BEFORE opening the app
+npm run dev:server   # Start this first
+npm run dev          # Then start Next.js
+
+# Or use the combined command:
+npm run dev:all
 ```
 
 ### "AI not responding"
@@ -113,6 +144,17 @@ npm run dev:server
 rm -rf .next node_modules package-lock.json
 npm install
 npm run build
+```
+
+### Port already in use
+```bash
+# Change ports in .env.local:
+WEBSOCKET_PORT=3002
+NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:3002
+
+# Or kill existing processes:
+# On Mac/Linux: kill -9 <PID>
+# On Windows: taskkill /PID <PID> /F
 ```
 
 ## 📚 Learn More

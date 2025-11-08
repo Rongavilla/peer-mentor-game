@@ -315,10 +315,42 @@ We welcome contributions! To contribute:
 
 ## 🐛 Troubleshooting
 
+### Localhost Not Working / Connection Issues
+
+**Problem**: Can't connect to localhost or see "Connection refused"
+
+**Solution**:
+```bash
+# 1. Create .env.local if it doesn't exist
+cp .env.example .env.local
+
+# 2. Start BOTH servers (this is required!)
+npm run dev:all
+
+# OR start them separately:
+# Terminal 1:
+npm run dev:server    # WebSocket server on port 3001
+
+# Terminal 2:
+npm run dev           # Next.js on port 3000
+
+# 3. Verify servers are running:
+# You should see:
+# - "ready - started server on 0.0.0.0:3000" (Next.js)
+# - "🎮 Game server running on port 3001" (WebSocket)
+
+# 4. Check if ports are available:
+lsof -i :3000    # Mac/Linux
+lsof -i :3001    # Mac/Linux
+netstat -ano | findstr :3000    # Windows
+netstat -ano | findstr :3001    # Windows
+```
+
 ### WebSocket Connection Issues
-- Ensure the WebSocket server is running on port 3001
-- Check that `NEXT_PUBLIC_WEBSOCKET_URL` is set correctly
-- Verify firewall settings allow connections on port 3001
+- Ensure the WebSocket server is running on port 3001 **BEFORE** opening the app
+- Check that `NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:3001` in `.env.local`
+- Verify firewall settings allow connections on ports 3000 and 3001
+- Make sure both Next.js (3000) and WebSocket server (3001) are running simultaneously
 
 ### AI Features Not Working
 - Verify your OpenAI API key is set in `.env.local`
@@ -329,6 +361,15 @@ We welcome contributions! To contribute:
 - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
 - Clear Next.js cache: `rm -rf .next`
 - Ensure all TypeScript errors are resolved
+
+### Port Already in Use
+```bash
+# Change ports in .env.local if defaults are taken:
+WEBSOCKET_PORT=3002
+NEXT_PUBLIC_WEBSOCKET_URL=http://localhost:3002
+
+# Or kill existing processes using the ports
+```
 
 ---
 
