@@ -5,6 +5,7 @@ A **gamified peer-to-peer IT mentorship platform** with AI-powered skill matchin
 ## 🌟 Project Vision
 
 Transform IT mentorship into an engaging RPG-style experience where:
+
 - **Mentors & Mentees** connect through AI-powered matching
 - **Learning becomes gameplay** with quests, XP, and skill trees
 - **Progress is rewarded** with badges, levels, and achievements
@@ -15,12 +16,14 @@ Transform IT mentorship into an engaging RPG-style experience where:
 ## 🏗️ Tech Stack
 
 ### Frontend (Game Interface)
+
 - **Framework**: Next.js 14 + TypeScript
 - **Game Engine**: Phaser.js 3.60
 - **Styling**: Tailwind CSS
 - **State Management**: React Hooks (Zustand coming soon)
 
 ### Backend (Coming Soon)
+
 - **API**: Python FastAPI
 - **AI Matching**: OpenAI API / Custom ML
 - **Database**: PostgreSQL + Redis
@@ -31,7 +34,8 @@ Transform IT mentorship into an engaging RPG-style experience where:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
@@ -55,18 +59,21 @@ Open [http://localhost:3000](http://localhost:3000) to see the game!
 ## 🎯 Game Mechanics
 
 ### World Map
+
 - 🏰 **Python Kingdom** - Python mentorship quests
 - ☁️ **Cloud Citadel** - AWS, Azure, GCP zones
-- 🔐 **Security Dungeon** - Cybersecurity challenges  
+- 🔐 **Security Dungeon** - Cybersecurity challenges
 - 🤖 **AI Laboratory** - Machine learning missions
 
 ### Character Progression
+
 - **Levels & XP** - Gain experience through mentorship sessions
 - **Skill Trees** - Unlock new technologies and expertise
 - **Quests** - Complete mentorship challenges
 - **Inventory** - Collect power-ups and skill scrolls
 
 ### Rewards System
+
 - 🏆 Achievements & Badges
 - 📊 Global Leaderboards
 - 🎁 Exclusive Cosmetic Items
@@ -96,24 +103,28 @@ peer-mentor-game/
 ## 🛣️ Roadmap
 
 ### Phase 1: Foundation ✅ (Current)
-- [x] Project setup with Next.js + Phaser
-- [x] Basic game structure
-- [ ] Character creation screen
-- [ ] World map navigation
+
+- [X] Project setup with Next.js + Phaser
+- [X] Basic game structure
+- [X] Character creation screen
+- [X] World map navigation
 
 ### Phase 2: Core Features
+
 - [ ] User authentication system
 - [ ] Profile & skill management
 - [ ] AI skill matching algorithm
 - [ ] Quest system implementation
 
 ### Phase 3: Gamification
+
 - [ ] XP and leveling system
 - [ ] Achievement engine
 - [ ] Leaderboards
 - [ ] Reward marketplace
 
 ### Phase 4: Social Features
+
 - [ ] Real-time video sessions
 - [ ] Chat & messaging
 - [ ] Community events

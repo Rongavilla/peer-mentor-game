@@ -27,7 +27,8 @@ export default function ProfileEditor({ onClose }: ProfileEditorProps) {
     username: profile?.username || '',
     grade: profile?.grade || 'College 1st Year',
     course: profile?.course || '',
-    age: profile?.age || 18,
+    // Allow empty string while editing to avoid setting NaN on the number input
+    age: profile?.age ?? '',
     hobbies: profile?.hobbies || [],
     expertise: profile?.expertise || [],
   });
@@ -92,14 +93,22 @@ export default function ProfileEditor({ onClose }: ProfileEditorProps) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Ensure age is a number before sending (default to 18 if empty)
+      const payload = {
+        ...formData,
+        age: formData.age === '' || formData.age === null || formData.age === undefined
+          ? 18
+          : Number(formData.age),
+      };
+
       const response = await fetch('/api/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
       if (data.success) {
-        updateProfile(formData);
+        updateProfile(payload);
         toast.success('Profile updated successfully!');
         onClose();
       } else {
@@ -168,7 +177,11 @@ export default function ProfileEditor({ onClose }: ProfileEditorProps) {
             min="13"
             max="100"
             value={formData.age}
-            onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              // Keep empty string while the user clears input to avoid NaN
+              handleInputChange('age', v === '' ? '' : parseInt(v, 10));
+            }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>

@@ -94,6 +94,18 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* Ensure form control text is black */
+input, textarea, select, option {
+  /* Force black text for form inputs across themes */
+  color: rgb(0, 0, 0) !important;
+}
+
+/* Placeholder styling (slightly muted but readable) */
+input::placeholder, textarea::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+
 /* Smooth transitions */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
@@ -107,5 +119,72 @@ textarea:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Animated theme-aware background blobs */
+:root {
+  --bg-blob-1-rgb: 79,70,229; /* indigo-600 */
+  --bg-blob-2-rgb: 99,102,241; /* indigo-400 */
+  --bg-blob-3-rgb: 167,139,250; /* purple-200 */
+  --bg-blob-4-rgb: 139,92,246; /* purple-600 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-blob-1-rgb: 99,102,241; /* indigo-400 */
+    --bg-blob-2-rgb: 124,58,237; /* purple-600 */
+    --bg-blob-3-rgb: 79,70,229; /* indigo-600 */
+    --bg-blob-4-rgb: 45,55,72; /* slate-700 subtle */
+  }
+}
+
+.animated-bg::before,
+.animated-bg::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* visible above body background */
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform-origin: center;
+  opacity: 0.9;
+  filter: blur(60px) saturate(120%);
+  transition: opacity .3s ease;
+}
+
+/* Blob 1 */
+.animated-bg::before {
+  background-image: radial-gradient(circle at 10% 20%, rgba(var(--bg-blob-1-rgb),0.9) 0%, rgba(var(--bg-blob-1-rgb),0.6) 20%, rgba(var(--bg-blob-1-rgb),0.35) 40%, transparent 60%),
+                    radial-gradient(circle at 80% 80%, rgba(var(--bg-blob-2-rgb),0.6) 0%, rgba(var(--bg-blob-2-rgb),0.25) 30%, transparent 60%);
+  animation: blobMove1 12s infinite linear;
+}
+
+/* Blob 2 */
+.animated-bg::after {
+  background-image: radial-gradient(circle at 80% 20%, rgba(var(--bg-blob-3-rgb),0.7) 0%, rgba(var(--bg-blob-3-rgb),0.4) 25%, transparent 50%),
+                    radial-gradient(circle at 30% 80%, rgba(var(--bg-blob-4-rgb),0.5) 0%, transparent 40%);
+  animation: blobMove2 18s infinite linear;
+  opacity: 0.8;
+}
+
+@keyframes blobMove1 {
+  0% { transform: translate3d(0,0,0) scale(1); opacity: 0.9; }
+  50% { transform: translate3d(10%, -5%, 0) scale(1.05); opacity: 0.85; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: 0.9; }
+}
+
+@keyframes blobMove2 {
+  0% { transform: translate3d(0,0,0) scale(1); opacity: 0.8; }
+  50% { transform: translate3d(-8%, 6%, 0) scale(1.07); opacity: 0.7; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: 0.8; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg::before,
+  .animated-bg::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
