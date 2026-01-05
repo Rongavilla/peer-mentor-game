@@ -11,7 +11,7 @@
     "@headlessui/react": "^2.2.9",
     "@supabase/supabase-js": "^2.80.0",
     "lucide-react": "^0.553.0",
-    "next": "^13.0.0",
+    "next": "^16.1.1",
     "openai": "^6.8.1",
     "phaser": "^3.60.0",
     "react": "^18.2.0",

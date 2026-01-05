@@ -2,14 +2,19 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useUserStore } from '@/store/userStore'
 
 export default function Home() {
   const router = useRouter()
+  const profile = useUserStore((s) => s.profile)
 
   useEffect(() => {
-    // Redirect to dashboard
-    router.push('/dashboard')
-  }, [router])
+    if (profile) {
+      router.push('/dashboard')
+    } else {
+      router.push('/signin')
+    }
+  }, [router, profile])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -19,4 +24,4 @@ export default function Home() {
       </div>
     </div>
   )
-}
+} 

@@ -10,6 +10,7 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {},
   webpack: (config, { isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,

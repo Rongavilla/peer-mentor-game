@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
-import { mockUser, mockBadges } from '@/lib/mockData';
+import { mockBadges } from '@/lib/mockData';
 import ProfileCard from '@/components/ProfileCard';
 import Settings from '@/components/Settings';
 import BadgeDisplay from '@/components/BadgeDisplay';
@@ -14,17 +15,18 @@ import { Toaster } from 'react-hot-toast';
 type Tab = 'dashboard' | 'badges' | 'matching';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { profile, setProfile, setStatus } = useUserStore();
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
   useEffect(() => {
-    // Initialize profile from API or mock data
+    // If not signed in, redirect to sign-in
     if (!profile) {
-      setProfile(mockUser);
+      router.push('/signin');
     }
-  }, [profile, setProfile]);
+  }, [profile, router]);
 
   const handleStatusChange = async (newStatus: 'mentee' | 'mentor') => {
     setStatus(newStatus);
