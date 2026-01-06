@@ -43,9 +43,9 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50/40 to-purple-50/40 p-6">
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
         {/* Left visual panel */}
-        <div className="hidden md:flex flex-col items-start justify-center p-8 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg">
+        <div className="hidden md:flex flex-col items-start justify-center p-8 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg h-full">
           <div className="mb-6">
             <h1 className="text-3xl font-extrabold">StudyQuest</h1>
             <p className="mt-2 text-sm opacity-90">Find mentors, share expertise, and level up together.</p>
@@ -56,7 +56,7 @@ export default function SignInPage() {
         </div>
 
         {/* Form card */}
-        <div className="bg-white rounded-xl shadow-md p-8">
+        <div className="bg-white rounded-xl shadow-md p-8 h-full flex flex-col justify-center">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="bg-indigo-50 p-2 rounded-full">
