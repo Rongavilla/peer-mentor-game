@@ -1,4 +1,4 @@
-'use client'
+import GamesSignage from '@/components/GamesSignage'
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'

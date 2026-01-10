@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
+// ...existing code...
 export const metadata: Metadata = {
   title: 'StudyQuest - Professional Peer Mentorship Platform',
   description: 'A gamified peer-to-peer IT mentorship platform with AI-powered skill matching',
