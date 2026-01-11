@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-// ...existing code...
-export default function Footer() {
-  return (
-    <footer className="mt-8 py-6 text-center border-t text-sm text-gray-600">
-      © {new Date().getFullYear()} StudyQuest
-    </footer>
-  )
-}
-// ...existing code...
-=======
 'use client'
 
 export default function Footer() {
@@ -24,4 +13,4 @@ export default function Footer() {
     </footer>
   )
 }
->>>>>>> c36df609db213125912bc0b5f13b9a464004dc0c
+
