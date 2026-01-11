@@ -1,12 +1,14 @@
-import GamesSignage from '@/components/GamesSignage'
+// Add client directive so Hooks are allowed
+'use client'
 
+import GamesSignage from '@/components/GamesSignage'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 
 export default function Home() {
   const router = useRouter()
-  const profile = useUserStore((s) => s.profile)
+  const { profile } = useUserStore()
 
   useEffect(() => {
     if (profile) {
@@ -24,4 +26,4 @@ export default function Home() {
       </div>
     </div>
   )
-} 
+}

@@ -1,10 +1,10 @@
-// ...existing code...
-// Option A (uses tsconfig path alias; may fail if alias not configured)
-import ProfilePicture from '/components/ProfilePicture'
+import ProfilePicture from '@/components/ProfilePicture'
 
-// Option B (safe relative import)
-import ProfilePicture from '../../components/ProfilePicture'
-
-// ...inside the page JSX where you want the avatar...
-<ProfilePicture initial="/path/to/current/avatar.png" />
-// ...existing code...
+export default function ProfilePage() {
+  return (
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Your Profile</h1>
+      <ProfilePicture initial="/default-avatar.png" />
+    </main>
+  )
+}

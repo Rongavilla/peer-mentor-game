@@ -22,6 +22,3 @@ export default function GamesSignage() {
     </section>
   )
 }
-// ...existing code...
-<GamesSignage />
-// ...existing code...
