@@ -7,6 +7,7 @@ import { useUserStore } from '@/store/userStore'
 import { mockBadges } from '@/lib/mockData'
 import ProfileCard from '@/components/ProfileCard'
 import Settings from '@/components/Settings'
+import AvatarSelector from '@/components/AvatarSelector'
 import BadgeDisplay from '@/components/BadgeDisplay'
 import SkillMatching from '@/components/SkillMatching'
 import DashboardTab from '@/components/DashboardTab'
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   const { profile, setProfile, setStatus } = useUserStore()
   const [activeTab, setActiveTab] = useState<Tab>('dashboard')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const [showImageUpload, setShowImageUpload] = useState(false)
+  const [showAvatarSelector, setShowAvatarSelector] = useState(false)
 
   useEffect(() => {
     if (!profile) {
@@ -41,26 +42,23 @@ export default function DashboardPage() {
     }
   }
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await response.json()
-      if (data.success && profile) {
-        setProfile({ ...profile, profilePicture: data.url })
+  const handleAvatarSelect = async (avatarUrl: string) => {
+    if (profile) {
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profilePicture: avatarUrl }),
+        })
+        const data = await response.json()
+        if (data.success) {
+          setProfile({ ...profile, profilePicture: avatarUrl })
+        }
+      } catch (error) {
+        console.error('Failed to update avatar:', error)
       }
-    } catch (error) {
-      console.error('Failed to upload image:', error)
     }
-    setShowImageUpload(false)
+    setShowAvatarSelector(false)
   }
 
   if (!profile) {
@@ -159,7 +157,7 @@ export default function DashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <ProfileCard profile={profile} onStatusChange={handleStatusChange} onProfilePictureClick={() => setShowImageUpload(true)} />
+            <ProfileCard profile={profile} onStatusChange={handleStatusChange} onProfilePictureClick={() => setShowAvatarSelector(true)} />
           </div>
         </div>
       </div>
@@ -167,20 +165,13 @@ export default function DashboardPage() {
       {/* Settings Modal */}
       <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
-      {/* Image Upload Input */}
-      {showImageUpload && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Upload Profile Picture</h3>
-            <input type="file" accept="image/*" onChange={handleImageUpload} className="w-full mb-4" />
-            <div className="flex space-x-3">
-              <button onClick={() => setShowImageUpload(false)} className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Avatar Selector Modal */}
+      <AvatarSelector
+        isOpen={showAvatarSelector}
+        onClose={() => setShowAvatarSelector(false)}
+        onSelectAvatar={handleAvatarSelect}
+        currentUsername={profile?.username || 'user'}
+      />
     </div>
   )
 }

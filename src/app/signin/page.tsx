@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
+import { saveUserToDatabase, saveActivityLog } from '@/lib/database'
 import { LogIn, User, Lock } from 'lucide-react'
 
 export default function SignInPage() {
@@ -32,6 +33,15 @@ export default function SignInPage() {
         setError(data.error || 'Sign in failed')
       } else {
         setProfile(data.profile)
+        
+        // Save user data to localStorage
+        saveUserToDatabase(data.profile)
+        
+        // Save activity log
+        if (data.activityLog) {
+          saveActivityLog(data.activityLog)
+        }
+        
         router.push('/dashboard')
       }
     } catch (err) {

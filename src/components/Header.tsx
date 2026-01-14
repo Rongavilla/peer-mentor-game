@@ -1,11 +1,35 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
-import { Users, LogIn } from 'lucide-react'
+import { Users, LogIn, LogOut } from 'lucide-react'
 
 export default function Header() {
+  const router = useRouter()
   const profile = useUserStore((s) => s.profile)
+  const clearProfile = useUserStore((s) => s.clearProfile)
+
+  const handleLogout = async () => {
+    // Clear profile immediately from Zustand store
+    clearProfile()
+    
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: profile?.username || 'unknown',
+          userId: profile?.id || null,
+        }),
+      })
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+    
+    // Redirect to home
+    router.push('/')
+  }
 
   return (
     <header className="bg-white border-b shadow-sm sticky top-0 z-30 backdrop-blur-sm">
@@ -28,9 +52,17 @@ export default function Header() {
                   <img src={profile.profilePicture} alt="avatar" className="w-6 h-6 rounded-full" />
                   <span className="text-sm">{profile.username}</span>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center space-x-1"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign out</span>
+                </button>
               </>
             ) : (
               <>
+                <Link href="/admin/login" className="text-sm text-gray-600 hover:text-gray-900">Admin</Link>
                 <Link href="/signin" className="text-sm text-gray-700 hover:text-gray-900 flex items-center space-x-2">
                   <LogIn className="w-4 h-4" />
                   <span>Sign in</span>

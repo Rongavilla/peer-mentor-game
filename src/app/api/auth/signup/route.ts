@@ -1,41 +1,138 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 import type { UserProfile } from '@/types';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, name } = await request.json();
+    const { 
+      username, 
+      password, 
+      name, 
+      email,
+      grade,
+      age,
+      course,
+      status,
+      hobbies = [],
+      expertise = []
+    } = await request.json();
 
     if (!username || !password || !name) {
-      return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
     if (username.length < 3) {
-      return NextResponse.json({ success: false, error: 'Username must be at least 3 characters' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Username must be at least 3 characters' },
+        { status: 400 }
+      );
     }
 
     if (password.length < 6) {
-      return NextResponse.json({ success: false, error: 'Password must be at least 6 characters' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Password must be at least 6 characters' },
+        { status: 400 }
+      );
     }
 
-    // Create a minimal mock profile for demo purposes
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Create user in Supabase
+    const { data: newUser, error: signupError } = await supabase
+      .from('users')
+      .insert({
+        username,
+        email: email || null,
+        name,
+        password_hash: passwordHash,
+        grade: grade || 'College 1st Year',
+        age: age || 18,
+        course: course || '',
+        status: status || 'mentee',
+        profile_picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+          username
+        )}`,
+      })
+      .select()
+      .single();
+
+    if (signupError) {
+      if (signupError.code === '23505') {
+        return NextResponse.json(
+          { success: false, error: 'Username already exists' },
+          { status: 409 }
+        );
+      }
+      throw signupError;
+    }
+
+    // Insert hobbies
+    if (hobbies && hobbies.length > 0) {
+      const hobbiesData = hobbies.map((hobby: string) => ({
+        user_id: newUser.id,
+        hobby,
+      }));
+      await supabase.from('user_hobbies').insert(hobbiesData);
+    }
+
+    // Insert expertise
+    if (expertise && expertise.length > 0) {
+      const expertiseData = expertise.map((exp: string) => ({
+        user_id: newUser.id,
+        expertise: exp,
+      }));
+      await supabase.from('user_expertise').insert(expertiseData);
+    }
+
+    // Log signin activity
+    await supabase.from('activity_logs').insert({
+      user_id: newUser.id,
+      username: newUser.username,
+      action: 'signin',
+      user_agent: request.headers.get('user-agent'),
+      ip_address: request.headers.get('x-forwarded-for') || 'unknown',
+    });
+
+    // Convert to UserProfile format
     const profile: UserProfile = {
-      id: String(Date.now()),
-      name,
-      username,
-      profilePicture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(username)}`,
-      grade: 'College 1st Year',
-      course: '',
-      age: 18,
-      hobbies: [],
-      expertise: [],
-      status: 'mentee',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      id: newUser.id,
+      name: newUser.name,
+      username: newUser.username,
+      profilePicture: newUser.profile_picture,
+      grade: newUser.grade || 'College 1st Year',
+      course: newUser.course || '',
+      age: newUser.age || 18,
+      hobbies: hobbies || [],
+      expertise: expertise || [],
+      status: newUser.status || 'mentee',
+      createdAt: newUser.created_at,
+      updatedAt: newUser.updated_at,
     };
 
-    // In production you'd persist to DB and hash the password
-    return NextResponse.json({ success: true, profile });
+    const activityLog = {
+      id: newUser.id,
+      username: newUser.username,
+      action: 'signin' as const,
+      timestamp: new Date().toISOString(),
+    };
+
+    return NextResponse.json({ success: true, profile, activityLog });
   } catch (error) {
-    return NextResponse.json({ success: false, error: 'Failed to sign up' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Signup error:', errorMessage);
+    console.error('Full error:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: `Failed to sign up: ${errorMessage}`,
+        debug: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
+      { status: 500 }
+    );
   }
 }
