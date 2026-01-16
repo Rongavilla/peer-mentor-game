@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 import { saveUserToDatabase, saveActivityLog } from '@/lib/database'
-import { LogIn, User, Lock } from 'lucide-react'
+import { LogIn, User, Lock, ChevronRight } from 'lucide-react'
+import AnimatedBackground from '@/components/AnimatedBackground'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -33,15 +34,10 @@ export default function SignInPage() {
         setError(data.error || 'Sign in failed')
       } else {
         setProfile(data.profile)
-        
-        // Save user data to localStorage
         saveUserToDatabase(data.profile)
-        
-        // Save activity log
         if (data.activityLog) {
           saveActivityLog(data.activityLog)
         }
-        
         router.push('/dashboard')
       }
     } catch (err) {
@@ -52,81 +48,145 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50/40 to-purple-50/40 p-6">
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-        {/* Left visual panel */}
-        <div className="hidden md:flex flex-col items-start justify-center p-8 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg h-full">
-          <div className="mb-6">
-            <h1 className="text-3xl font-extrabold">StudyQuest</h1>
-            <p className="mt-2 text-sm opacity-90">Find mentors, share expertise, and level up together.</p>
-          </div>
-          <div className="mt-6 bg-white/10 p-4 rounded-lg">
-            <p className="text-sm">Fast, friendly, and made for learning.</p>
-          </div>
-        </div>
+    <div className="relative min-h-screen overflow-hidden">
+      <AnimatedBackground />
 
-        {/* Form card */}
-        <div className="bg-white rounded-xl shadow-md p-8 h-full flex flex-col justify-center">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="bg-indigo-50 p-2 rounded-full">
-                <LogIn className="w-5 h-5 text-indigo-600" />
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-5xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left side - Branding and Features */}
+            <div className="text-white space-y-8 order-2 lg:order-1">
+              <div className="space-y-6">
+                <div className="inline-block">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <span className="text-xl font-bold">SQ</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-5xl lg:text-6xl font-black mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    Welcome Back
+                  </h1>
+                  <p className="text-lg text-gray-300 leading-relaxed">
+                    Ready to level up your learning? Sign in to continue your journey with StudyQuest.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold">Welcome back</h2>
-                <p className="text-sm text-gray-500">Sign in to continue to StudyQuest</p>
-              </div>
-            </div>
-            <div>
-              <Link href="/signup" className="text-sm text-indigo-600 font-medium">Create account</Link>
-            </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Username</label>
-              <div className="mt-1 relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><User className="w-4 h-4" /></span>
-                <input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10 block w-full rounded-md border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="your username"
-                  required
-                />
-              </div>
-            </div>
+              <div className="space-y-4 pt-4">
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mt-1 group-hover:bg-blue-500/40 transition-colors">
+                    <span className="text-blue-300">🎮</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">Play Interactive Games</h3>
+                    <p className="text-sm text-gray-400">Master IT skills through engaging gameplay</p>
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
-              <div className="mt-1 relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><Lock className="w-4 h-4" /></span>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 block w-full rounded-md border border-gray-200 px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="••••••••"
-                  required
-                />
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mt-1 group-hover:bg-purple-500/40 transition-colors">
+                    <span className="text-purple-300">🤖</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">AI-Powered Matching</h3>
+                    <p className="text-sm text-gray-400">Get matched with perfect mentors instantly</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center mt-1 group-hover:bg-pink-500/40 transition-colors">
+                    <span className="text-pink-300">⭐</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">Earn Badges & Rewards</h3>
+                    <p className="text-sm text-gray-400">Showcase your expertise and achievements</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {/* Right side - Form */}
+            <div className="order-1 lg:order-2">
+              <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-8 lg:p-10 shadow-2xl hover:bg-white/15 transition-all duration-300">
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-white mb-2">Sign In</h2>
+                  <p className="text-gray-300">Access your StudyQuest account</p>
+                </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 disabled:opacity-60"
-              >
-                {loading ? 'Signing in...' : 'Sign In'}
-              </button>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-200">Username</label>
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity blur"></div>
+                      <div className="relative flex items-center">
+                        <User className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors" />
+                        <input
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
+                          placeholder="your username"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-200">Password</label>
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg opacity-0 group-hover:opacity-20 transition-opacity blur"></div>
+                      <div className="relative flex items-center">
+                        <Lock className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors" />
+                        <input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all"
+                          placeholder="••••••••"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+                      <p className="text-sm text-red-200">{error}</p>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2 group hover:shadow-lg hover:shadow-purple-500/50"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Signing in...
+                      </>
+                    ) : (
+                      <>
+                        Sign In
+                        <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <p className="text-center text-gray-300 text-sm">
+                    Don't have an account?{' '}
+                    <Link href="/signup" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
+                      Sign up now
+                    </Link>
+                  </p>
+                </div>
+              </div>
             </div>
-          </form>
-
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>Don't have an account? <Link href="/signup" className="text-indigo-600 font-medium">Sign up</Link></p>
           </div>
         </div>
       </div>
