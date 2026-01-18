@@ -1,11 +1,11 @@
 ﻿'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 import { saveUserToDatabase, saveActivityLog } from '@/lib/database'
-import { UserPlus, User, Lock, BookOpen, Trophy, ChevronRight } from 'lucide-react'
+import { UserPlus, User, Lock, BookOpen, Trophy, ChevronRight, Lightbulb, Loader } from 'lucide-react'
 import AnimatedBackground from '@/components/AnimatedBackground'
 
 const HOBBIES = ['Gaming', 'Programming', 'Reading', 'Music', 'Art', 'Photography', 'Sports', 'Writing', 'Cooking', 'Travel', 'Movies', 'Dancing']
@@ -27,13 +27,37 @@ export default function SignUpPage() {
   const [customHobby, setCustomHobby] = useState('')
   const [expertise, setExpertise] = useState<string[]>([])
   const [customExpertise, setCustomExpertise] = useState('')
+  const [expertiseSuggestions, setExpertiseSuggestions] = useState<string[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const fetchExpertiseSuggestions = async (hobbies: string[], courseValue: string) => {
+    setLoadingSuggestions(true)
+    try {
+      const res = await fetch('/api/ai/expertise-suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hobbies, course: courseValue })
+      })
+      const data = await res.json()
+      if (data.success) {
+        setExpertiseSuggestions(data.suggestions)
+      }
+    } catch (err) {
+      console.error('Failed to fetch suggestions:', err)
+    } finally {
+      setLoadingSuggestions(false)
+    }
+  }
+
   const toggleHobby = (hobby: string) => {
-    setSelectedHobbies((prev) =>
-      prev.includes(hobby) ? prev.filter((h) => h !== hobby) : [...prev, hobby]
-    )
+    const newHobbies = selectedHobbies.includes(hobby) 
+      ? selectedHobbies.filter((h) => h !== hobby) 
+      : [...selectedHobbies, hobby]
+    setSelectedHobbies(newHobbies)
+    // Fetch expertise suggestions when hobbies change
+    fetchExpertiseSuggestions(newHobbies, course)
   }
 
   const addCustomHobby = () => {
@@ -287,7 +311,46 @@ export default function SignUpPage() {
               </div>
 
               <div className="border-t border-white/10 pt-6">
-                <label className="block text-sm font-medium text-gray-200 mb-3">Expertise/Skills</label>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-medium text-gray-200 flex items-center gap-2">
+                    <Lightbulb className="w-4 h-4 text-yellow-400" />
+                    Expertise/Skills
+                  </label>
+                  {loadingSuggestions && (
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <Loader className="w-3 h-3 animate-spin" />
+                      Generating suggestions...
+                    </span>
+                  )}
+                </div>
+
+                {/* AI-Suggested Expertise */}
+                {expertiseSuggestions.length > 0 && (
+                  <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <p className="text-xs text-yellow-300 mb-2 font-medium">💡 Suggested based on your interests:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {expertiseSuggestions.map((suggestion) => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onClick={() => {
+                            if (!expertise.includes(suggestion)) {
+                              setExpertise([...expertise, suggestion])
+                            }
+                          }}
+                          className={`px-3 py-1 text-sm rounded-full border transition-all ${
+                            expertise.includes(suggestion)
+                              ? 'bg-purple-500/30 border-purple-400 text-purple-200'
+                              : 'bg-yellow-500/20 border-yellow-400/50 text-yellow-200 hover:bg-yellow-500/30 hover:border-yellow-400'
+                          }`}
+                        >
+                          + {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex gap-2 mb-3">
                   <input
                     value={customExpertise}
@@ -354,8 +417,16 @@ export default function SignUpPage() {
                 </Link>
               </div>
 
-              <div className="text-center text-sm text-gray-300">
+              <div className="text-center text-sm text-gray-300 space-y-3">
                 <p>Already have an account? <Link href="/signin" className="text-blue-400 font-medium hover:text-blue-300 transition-colors">Sign in here</Link></p>
+                <div className="flex justify-center">
+                  <Link
+                    href="/admin/login"
+                    className="inline-block px-6 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/50"
+                  >
+                    Admin Login
+                  </Link>
+                </div>
               </div>
             </form>
           </div>

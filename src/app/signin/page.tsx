@@ -177,13 +177,21 @@ export default function SignInPage() {
                   </button>
                 </form>
 
-                <div className="mt-8 pt-6 border-t border-white/10">
+                <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
                   <p className="text-center text-gray-300 text-sm">
                     Don't have an account?{' '}
                     <Link href="/signup" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
                       Sign up now
                     </Link>
                   </p>
+                  <div className="flex justify-center">
+                    <Link
+                      href="/admin/login"
+                      className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/50 text-sm"
+                    >
+                      Admin Login
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

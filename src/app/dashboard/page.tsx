@@ -12,7 +12,8 @@ import BadgeDisplay from '@/components/BadgeDisplay'
 import SkillMatching from '@/components/SkillMatching'
 import DashboardTab from '@/components/DashboardTab'
 import AnimatedBackground from '@/components/AnimatedBackground'
-import { Settings as SettingsIcon, Home, Award, Users, LogOut } from 'lucide-react'
+import Messaging from '@/components/Messaging'
+import { Settings as SettingsIcon, Home, Award, Users, LogOut, MessageCircle } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 
 type Tab = 'dashboard' | 'badges' | 'matching'
@@ -145,6 +146,13 @@ export default function DashboardPage() {
               </nav>
 
               <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => router.push('/messages')}
+                  className="p-2 text-gray-300 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all border border-transparent hover:border-blue-500/30"
+                  title="Messages"
+                >
+                  <MessageCircle className="w-6 h-6" />
+                </button>
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-semibold transition-all ${
                     profile.status === 'mentor' ? 'bg-purple-500/30 text-purple-200 border border-purple-400/50' : 'bg-blue-500/30 text-blue-200 border border-blue-400/50'
@@ -204,6 +212,15 @@ export default function DashboardPage() {
         onSelectAvatar={handleAvatarSelect}
         currentUsername={profile?.username || 'user'}
       />
+
+      {/* Floating Messaging Component */}
+      {profile && (
+        <Messaging
+          currentUserId={profile.id}
+          currentUserName={profile.name}
+          currentUserAvatar={profile.profilePicture || ''}
+        />
+      )}
     </div>
   )
 }

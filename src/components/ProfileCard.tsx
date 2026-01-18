@@ -15,14 +15,6 @@ export default function ProfileCard({
   onStatusChange,
   onProfilePictureClick,
 }: ProfileCardProps) {
-  const [isChangingStatus, setIsChangingStatus] = useState(false);
-
-  const handleStatusToggle = () => {
-    setIsChangingStatus(true);
-    const newStatus = profile.status === 'mentee' ? 'mentor' : 'mentee';
-    onStatusChange(newStatus);
-    setTimeout(() => setIsChangingStatus(false), 500);
-  };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
@@ -47,37 +39,6 @@ export default function ProfileCard({
 
         <h2 className="mt-4 text-2xl font-bold text-gray-900">{profile.name}</h2>
         <p className="text-gray-500">@{profile.username}</p>
-      </div>
-
-      {/* Status Toggle */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
-          Current Mode
-        </label>
-        <div className="flex items-center justify-center space-x-3">
-          <button
-            onClick={handleStatusToggle}
-            disabled={isChangingStatus}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-              profile.status === 'mentee'
-                ? 'bg-blue-600 text-white shadow-lg scale-105'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            🎓 Mentee
-          </button>
-          <button
-            onClick={handleStatusToggle}
-            disabled={isChangingStatus}
-            className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all duration-300 ${
-              profile.status === 'mentor'
-                ? 'bg-purple-600 text-white shadow-lg scale-105'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            🎯 Mentor
-          </button>
-        </div>
       </div>
 
       {/* Profile Info */}

@@ -43,21 +43,23 @@ export async function POST(request: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Create user in Supabase
+    const userData: any = {
+      username,
+      email: email || null,
+      name,
+      password_hash: passwordHash,
+      grade: grade || 'College 1st Year',
+      age: age || 18,
+      course: course || '',
+      status: status || 'mentee',
+      profile_picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+        username
+      )}`,
+    };
+
     const { data: newUser, error: signupError } = await supabase
       .from('users')
-      .insert({
-        username,
-        email: email || null,
-        name,
-        password_hash: passwordHash,
-        grade: grade || 'College 1st Year',
-        age: age || 18,
-        course: course || '',
-        status: status || 'mentee',
-        profile_picture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
-          username
-        )}`,
-      })
+      .insert(userData)
       .select()
       .single();
 
@@ -123,14 +125,23 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, profile, activityLog });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    let errorMessage = 'An unknown error occurred';
+    
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error && typeof error === 'object' && 'message' in error) {
+      errorMessage = String((error as any).message);
+    }
+    
     console.error('Signup error:', errorMessage);
     console.error('Full error:', error);
+    
     return NextResponse.json(
       { 
         success: false, 
-        error: `Failed to sign up: ${errorMessage}`,
-        debug: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        error: errorMessage || 'Failed to sign up',
       },
       { status: 500 }
     );
